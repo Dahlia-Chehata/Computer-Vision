@@ -1,15 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import cv2 as cv
 import get_correspondences as corsp
 import Homography
 import RANSAC
 import warping
 
-CORRESPONDENCE_AUT0 = 0
-CORRESPONDENCE_MANUAL = 1
-CALCULATE_H_NORMALLY = 0
-CALCULATE_H_RANSAC = 1
+AUTO_CORRESPONDENCE = 0
+MANUAL_CORRESPONDENCE = 1
+NORMAL_H = 0
+RANSAC_H = 1
 
 def construct_mosaic(path1, path2, correspondance_method, H_calculation_method, ransac_loops=100):
     image1 = cv.imread(path1)
@@ -23,16 +21,16 @@ def construct_mosaic(path1, path2, correspondance_method, H_calculation_method, 
 
     corr_method_string = ""
     H_method_string = ""
-    if (correspondance_method == CORRESPONDENCE_AUT0):
-        p1, p2 = corsp.get_correspondance_auto(image1_gray, image2_gray)
+    if (correspondance_method == AUTO_CORRESPONDENCE):
+        p1, p2 = corsp.auto_correspondence(image1_gray, image2_gray)
         corr_method_string = "automatic correspondence"
     else:
-        p1, p2 = corsp.get_correspondance_manually(image1, image2, 8)
+        p1, p2 = corsp.manual_correspondence(image1, image2, 8)
         corr_method_string = "manual correspondence"
 
     new_filename = new_filename + "_" + corr_method_string
 
-    if (H_calculation_method == CALCULATE_H_NORMALLY):
+    if (H_calculation_method == NORMAL_H):
 
         H = Homography.calculate_h(p1[0:90], p2[0:90])
         H_method_string = "H calcualated without ransac"

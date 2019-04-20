@@ -1,27 +1,22 @@
 import numpy as np
 import Homography
-import matplotlib.pyplot as plt
-import cv2 as cv
-from numpy.linalg import inv
-from scipy.interpolate import RectBivariateSpline as interpolate
-import math
-import random
 
 
 def warp(source_image, dest_image, h):
     "aligns the two images"
     source_height = source_image.shape[0]
     source_width = source_image.shape[1]
-    source_edges = np.array([[0, 0], [source_width - 1, 0], [0, source_height - 1],
-                             [source_width - 1, source_height - 1]])  # array containing corner points of source image
-    source_edges = np.pad(source_edges, (0, 1), 'constant',
-                          constant_values=1)  # pad 1 to make it homogoneous representation
-    source_edges = source_edges[:-1]  # remove a redudant row from padding
+    # array containing corner points of source image
+    source_edges = np.array([[0, 0], [source_width - 1, 0], [0, source_height - 1], [source_width - 1, source_height - 1]])
+    # pad 1 to make it homogoneous representation
+    source_edges = np.pad(source_edges, (0, 1), 'constant',constant_values=1)
+    # remove a redundant row from padding
+    source_edges = source_edges[:-1]
+    # get the points corresponding to edges in non-homogeneous form each row is a point and each column is x or y
+    corr_source_edges = Homography.convert_to_non_homogenous(np.dot(h,source_edges.T).T)
 
-    corr_source_edges = Homography.from_homo(np.dot(h,
-                                         source_edges.T).T)  # get the points cerresponding to edges in non-homogoneous form each row is a point and each colum is x or y
 
-    # get the corresponting positions of the corner points
+    # get the corresponding positions of the corner points
     max_mapped_i, max_mapped_j = int(np.ndarray.max(corr_source_edges[:, 1], axis=0)), int(
         np.ndarray.max(corr_source_edges[:, 0], axis=0))
     min_mapped_i, min_mapped_j = int(np.ndarray.min(corr_source_edges[:, 1], axis=0)), int(
@@ -57,7 +52,7 @@ def warp(source_image, dest_image, h):
             if (int(mapped_source_image[i][j][0]) == 0 and int(mapped_source_image[i][j][1]) == 0 and int(
                     mapped_source_image[i][j][2]) == 0):
 
-                inverse_mapped_position = Homography.InvTransform(h, np.array([j - shiftWidth, i - shiftHeight, 1]))
+                inverse_mapped_position = Homography.inverse_transform(h, np.array([j - shiftWidth, i - shiftHeight, 1]))
                 inverse_mapped_i = inverse_mapped_position[1]
                 inverse_mapped_j = inverse_mapped_position[0]
                 if inverse_mapped_i <= source_height - 1 and inverse_mapped_i >= 0 and inverse_mapped_j <= source_width - 1 and inverse_mapped_j >= 0:

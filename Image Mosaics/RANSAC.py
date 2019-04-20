@@ -18,7 +18,7 @@ def ransac_error(single_p, single_p_, h):
     return math.sqrt(error)
 
 
-def ransac(p, p_, threshold, iterations):
+def ransac(points1, points2, threshold, iterations):
     "takes coreespondance points and for each 4 random pairs it calculates h and counts inliners from a given threshold and keeps the best h"
     max_inliners = 0
     best_h = None
@@ -29,15 +29,15 @@ def ransac(p, p_, threshold, iterations):
         randp_ = np.zeros([4, 2])
         H = None
         for j in range(4):
-            random_index = random.randrange(0, p.shape[0], 1)  # picks random points from the given set
+            random_index = random.randrange(0, points1.shape[0], 1)  # picks random points from the given set
 
-            randp[j] = p[random_index]
-            randp_[j] = p_[random_index]
+            randp[j] = points1[random_index]
+            randp_[j] = points2[random_index]
 
-        H = Homography.calculate_h(randp, randp_)  # calculates h from the 4 random points
+        H = Homography.calculate_homography(randp, randp_)  # calculates h from the 4 random points
 
-        for j in range(p.shape[0]):
-            error = ransac_error(p[j], p_[j], H)
+        for j in range(points1.shape[0]):
+            error = ransac_error(points1[j], points2[j], H)
 
             if (error < threshold):
                 inliners += 1
