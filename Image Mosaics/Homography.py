@@ -44,8 +44,8 @@ def inverse_transform(h, point):
 
 def transform(h, point):
     "for a point in first image gets its correspondence in second image "
-    corr_point = np.dot(h, point);
-    corr_point[0] /= corr_point[2];
+    corr_point = np.dot(h, point)
+    corr_point[0] /= corr_point[2]
     corr_point[1] /= corr_point[2]
     return corr_point[0:2]
 

@@ -32,7 +32,7 @@ def construct_mosaic(path1, path2, correspondance_method, H_calculation_method, 
 
     if (H_calculation_method == NORMAL_H):
 
-        H = Homography.calculate_h(p1[0:90], p2[0:90])
+        H = Homography.calculate_homography(p1[0:90], p2[0:90])
         H_method_string = "H calcualated without ransac"
 
 

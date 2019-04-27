@@ -19,7 +19,8 @@ def ransac_error(single_p, single_p_, h):
 
 
 def ransac(points1, points2, threshold, iterations):
-    "takes coreespondance points and for each 4 random pairs it calculates h and counts inliners from a given threshold and keeps the best h"
+    "takes coreespondance points and for each 4 random pairs it calculates h "
+    " and counts inliners from a given threshold and keeps the best h"
     max_inliners = 0
     best_h = None
 
