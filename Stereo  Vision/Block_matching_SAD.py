@@ -15,6 +15,8 @@ def stereo_match(left_img, right_img, kernel, max_offset,output_file):
     depth.shape = h, w
 
     kernel_half = int(kernel / 2)
+    if kernel % 2:
+        kernel_half += 1
     offset_adjust = 255 / max_offset  # this is used to map depth map output to 0-255 range
 
     for y in range(kernel_half, h - kernel_half):
